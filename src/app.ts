@@ -1,0 +1,56 @@
+import express, { type Application } from "express"
+import cors from "cors"
+import swaggerUi from "swagger-ui-express"
+import YAML from "yamljs"
+import path from "path"
+import { errorHandler } from "./middleware/errorHandler"
+
+// Import routes
+import authRoutes from "./routes/auth.route"
+import productRoutes from "./routes/products.route"
+import brandRoutes from "./routes/brands.route"
+import insuranceLogoRoutes from "./routes/insurance-logos.route"
+import cartRoutes from "./routes/cart.route"
+import wishlistRoutes from "./routes/wishlist.route"
+import adminRoutes from "./routes/admin.route"
+import lensesRoutes  from  './routes/lenses.route'
+
+/**
+ * Create and configure Express application
+ */
+export const createApp = (): Application => {
+  const app = express()
+
+  // Middleware
+  app.use(cors())
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
+
+  // Health check
+  app.get("/health", (req, res) => {
+    res.json({ success: true, message: "Server is running" })
+  })
+
+  // API routes
+  app.use("/auth", authRoutes)
+  app.use("/products", productRoutes)
+  app.use("/brands", brandRoutes)
+  app.use("/insurance-logos", insuranceLogoRoutes)
+  app.use("/cart", cartRoutes)
+  app.use("/wishlist", wishlistRoutes)
+  app.use("/admin", adminRoutes)
+  app.use("/lenses", lensesRoutes)
+
+  // Swagger documentation
+  try {
+    const swaggerDocument = YAML.load(path.join(__dirname, "../docs/openapi.yaml"))
+    app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+  } catch (error) {
+    console.warn("Swagger documentation not available")
+  }
+
+  // Error handler (must be last)
+  app.use(errorHandler)
+
+  return app
+}

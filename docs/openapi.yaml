@@ -1,0 +1,813 @@
+openapi: 3.0.0
+info:
+  title: Eyewear E-commerce API
+  description: Complete backend API for an eyewear e-commerce platform with authentication, products, brands, cart, and wishlist management
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@eyewear.com
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Products
+    description: Product management
+  - name: Brands
+    description: Brand management
+  - name: Insurance Logos
+    description: Insurance logo management
+  - name: Cart
+    description: Shopping cart operations
+  - name: Wishlist
+    description: Wishlist operations
+  - name: Admin
+    description: Admin dashboard operations
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        createdAt:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        brand:
+          type: string
+        price:
+          type: number
+        originalPrice:
+          type: number
+        rating:
+          type: number
+        images:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        specifications:
+          type: object
+        relatedProducts:
+          type: array
+          items:
+            type: string
+        gender:
+          type: string
+          enum: [men, women, unisex]
+
+    Brand:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        logo:
+          type: string
+        slug:
+          type: string
+        link:
+          type: string
+
+    Lenses:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        benefits:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        price:
+          type: number
+
+    InsuranceLogo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        logo:
+          type: string
+          nullable: true
+
+    CartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: integer
+        priceAtAddTime:
+          type: number
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Server is running
+
+  /auth/register:
+    post:
+      summary: Register a new user (with optional image)
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                role:
+                  type: string
+                  enum: [user, admin]
+                  example: user
+                image:
+                  type: string
+                  format: binary
+                  description: Optional profile image
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Validation error or user already exists
+
+
+  /auth/login:
+    post:
+      summary: Login user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+        '401':
+          description: Invalid refresh token
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      tags: [Authentication]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Logout successful
+
+  /products:
+    get:
+      summary: Get all products with filtering and pagination
+      tags: [Products]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 12
+        - name: brand
+          in: query
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          schema:
+            type: number
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [price-asc, price-desc, rating, newest]
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [men, women, unisex]
+      responses:
+        '200':
+          description: Products retrieved successfully
+
+    post:
+      summary: Create new product (admin only)
+      tags:
+        - Products
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - brand
+                - price
+                - description
+              properties:
+                name:
+                  type: string
+                brand:
+                  type: string
+                price:
+                  type: number
+                originalPrice:
+                  type: number
+                description:
+                  type: string
+                features:
+                  type: string
+                  example: '["Lightweight", "Scratch resistant"]'
+                specifications:
+                  type: string
+                  example: '{"frame":"metal","lens":"polarized"}'
+                relatedProducts:
+                  type: string
+                  example: '["675abc0101010101010101f2"]'
+                gender:
+                  type: string
+                  enum: [men, women, unisex]
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Product created successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+    
+
+  /products/{id}:
+    get:
+      summary: Get product by ID
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product retrieved successfully
+        '404':
+          description: Product not found
+
+    put:
+      summary: Update product (admin only)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                brand:
+                  type: string
+                price:
+                  type: number
+                originalPrice:
+                  type: number
+                description:
+                  type: string
+                features:
+                  type: string
+                specifications:
+                  type: string
+                relatedProducts:
+                  type: string
+                gender:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Product updated successfully
+        '404':
+          description: Product not found
+
+    delete:
+      summary: Delete product (admin only)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted successfully
+        '404':
+          description: Product not found
+
+  /products/related/{productId}:
+    get:
+      summary: Get related products
+      tags: [Products]
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Related products retrieved successfully
+
+  /brands:
+    get:
+      summary: Get all brands
+      tags: [Brands]
+      responses:
+        '200':
+          description: Brands retrieved successfully
+
+    post:
+      summary: Create new brand (admin only)
+      tags: [Brands]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                link:
+                  type: string
+                logo:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Brand created successfully
+
+  /brands/{id}:
+    get:
+      summary: Get brand by ID
+      tags: [Brands]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Brand retrieved successfully
+
+    put:
+      summary: Update brand (admin only)
+      tags: [Brands]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                link:
+                  type: string
+                logo:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Brand updated successfully
+
+    delete:
+      summary: Delete brand (admin only)
+      tags: [Brands]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Brand deleted successfully
+
+  /brands/{brandSlug}/products:
+    get:
+      summary: Get products by brand slug
+      tags: [Brands]
+      parameters:
+        - name: brandSlug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Products retrieved successfully
+
+  /lenses:
+    get:
+      summary: Get all lenses
+      tags: [Lenses]
+      responses:
+        '200':
+          description: Brands retrieved successfully
+
+  post:
+      summary: Create new Lenses (admin only)
+      tags: [Lenses]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                benefits:
+                  type: string
+                features:
+                  type: string
+                price:
+                  type: number
+      responses:
+        '201':
+          description: Brand created successfully
+    
+    
+
+  /insurance-logos:
+    get:
+      summary: Get all insurance logos
+      tags: [Insurance Logos]
+      responses:
+        '200':
+          description: Insurance logos retrieved successfully
+
+    post:
+      summary: Create insurance logo (admin only)
+      tags: [Insurance Logos]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                logo:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Insurance logo created successfully
+
+  /insurance-logos/{id}:
+    put:
+      summary: Update insurance logo (admin only)
+      tags: [Insurance Logos]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                logo:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Insurance logo updated successfully
+
+    delete:
+      summary: Delete insurance logo (admin only)
+      tags: [Insurance Logos]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Insurance logo deleted successfully
+
+  /cart:
+    get:
+      summary: Get user's cart
+      tags: [Cart]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Cart retrieved successfully
+
+    post:
+      summary: Add item to cart
+      tags: [Cart]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: integer
+                  default: 1
+      responses:
+        '200':
+          description: Item added to cart
+
+  /cart/{itemId}:
+    put:
+      summary: Update cart item quantity
+      tags: [Cart]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - quantity
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 1
+      responses:
+        '200':
+          description: Cart item updated
+
+    delete:
+      summary: Remove item from cart
+      tags: [Cart]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item removed from cart
+
+  /wishlist:
+    get:
+      summary: Get user's wishlist
+      tags: [Wishlist]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Wishlist retrieved successfully
+
+    post:
+      summary: Add item to wishlist
+      tags: [Wishlist]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  type: string
+      responses:
+        '200':
+          description: Item added to wishlist
+
+  /wishlist/{productId}:
+    delete:
+      summary: Remove item from wishlist
+      tags: [Wishlist]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item removed from wishlist
+
+  /admin/overview:
+    get:
+      summary: Get admin dashboard overview
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Overview retrieved successfully
+        '403':
+          description: Admin access required
