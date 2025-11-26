@@ -14,7 +14,7 @@ import cartRoutes from "./routes/cart.route"
 import wishlistRoutes from "./routes/wishlist.route"
 import adminRoutes from "./routes/admin.route"
 import lensesRoutes  from  './routes/lenses.route'
-
+import contactRes from "./routes/contact.routes"
 /**
  * Create and configure Express application
  */
@@ -49,6 +49,7 @@ export const createApp = (): Application => {
   app.use("/wishlist", wishlistRoutes)
   app.use("/admin", adminRoutes)
   app.use("/lenses", lensesRoutes)
+  app.use('/contacts', contactRes);
 
   // Swagger documentation
   try {
