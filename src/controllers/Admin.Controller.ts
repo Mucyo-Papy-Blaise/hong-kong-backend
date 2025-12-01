@@ -3,14 +3,9 @@ import { User } from "../models/User"
 import { Product } from "../models/Product"
 import { Brand } from "../models/Brand"
 
-/**
- * Admin controller - handles admin dashboard operations
- */
+
 export class AdminController {
-  /**
-   * Get admin dashboard overview
-   * GET /admin/overview
-   */
+
   async getOverview(req: Request, res: Response) {
     try {
       // Get counts

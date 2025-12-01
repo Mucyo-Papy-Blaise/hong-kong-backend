@@ -53,3 +53,19 @@ export interface ApiResponse<T = any> {
   error?: string
 }
 
+export interface IPurchasedProduct {
+  name: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+export interface IClient {
+  name: string;
+  phone: string;
+  email?: string;
+  address?: string;
+  purchases?: IPurchasedProduct[];
+  totalPurchases?: number;
+  createdAt?: Date;
+}
