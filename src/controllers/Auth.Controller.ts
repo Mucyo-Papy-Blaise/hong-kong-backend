@@ -5,9 +5,7 @@ import { generateAccessToken } from "../services/token"
 import type { AuthRequest } from "../types"
 import { uploadSingleImage } from "../services/cloudinary"
 
-/**
- * Authentication controller - handles user registration, login, and logout
- */
+
 export class AuthController {
   //Register  
   async register(req: Request, res: Response) {

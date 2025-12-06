@@ -10,9 +10,9 @@ export interface IProduct extends Document {
   images: string[]
   description: string
   shape: string,
-  lensType: mongoose.Types.ObjectId[],
-  features: string[]
-  specifications: Map<string, string>
+  lensType?: mongoose.Types.ObjectId[],
+  features?: string[]
+  specifications?: Map<string, string>
   relatedProducts: mongoose.Types.ObjectId[]
   gender?: string
   createdAt: Date
@@ -29,7 +29,8 @@ const productSchema = new Schema<IProduct>(
     },
     brand: { 
       type: Schema.Types.ObjectId, 
-      ref: "Brand" 
+      ref: "Brand", 
+      required: false
     },
     price: {
       type: Number,
@@ -46,7 +47,8 @@ const productSchema = new Schema<IProduct>(
     },
     lensType: {
       type: [Schema.Types.ObjectId], 
-      ref: "Lenses" 
+      ref: "Lenses", 
+      required: false
     },
     rating: {
       type: Number,

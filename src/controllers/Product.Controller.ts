@@ -7,14 +7,9 @@ import { Brand } from "../models/Brand"
 import { Lenses } from "../models/Lenses"
 import mongoose from "mongoose"
 
-/**
- * Product controller - handles all product-related operations
- */
+
 export class ProductController {
-  /**
-   * Get all products with filtering, pagination, and sorting
-   * GET /products
-   */
+
 async getAll(req: Request, res: Response) {
   try {
     const {
@@ -180,12 +175,14 @@ async getAll(req: Request, res: Response) {
     }
 
     let lensIds: mongoose.Types.ObjectId[] = [];
+
     if (lensType) {
       const lensNames = Array.isArray(lensType) ? lensType : JSON.parse(lensType);
       const lenses = await Lenses.find({ name: { $in: lensNames } });
-      if (lenses.length === 0)
-        return res.status(400).json({ success: false, error: "No lenses found" });
+    
+      if (lenses.length > 0) {
         lensIds = lenses.map((l) => l._id as mongoose.Types.ObjectId);
+      }
     }
 
     const files = req.files as Express.Multer.File[] ?? [];
