@@ -17,10 +17,11 @@ import lensesRoutes  from  './routes/lenses.route'
 import contactRes from "./routes/contact.routes"
 import clientRes from './routes/Clients.route'
 import orderRes from './routes/order.route'
+import AppointmentRes  from "./routes/appointment.routes"
 
-/**
- * Create and configure Express application
- */
+
+// Create and configure Express application
+
 export const createApp = (): Application => {
   const app = express()
 
@@ -55,6 +56,7 @@ export const createApp = (): Application => {
   app.use('/contacts', contactRes);
   app.use('/api/clients', clientRes)
   app.use('/orders', orderRes)
+  app.use("/appointments", AppointmentRes)
 
   // Swagger documentation
   try {

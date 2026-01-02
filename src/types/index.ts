@@ -64,6 +64,7 @@ export interface IClient {
   name: string;
   phone: string;
   email?: string;
+  purchaseDate?: Date;
   address?: string;
   purchases?: IPurchasedProduct[];
   totalPurchases?: number;

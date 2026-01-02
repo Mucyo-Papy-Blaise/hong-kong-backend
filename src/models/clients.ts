@@ -16,6 +16,7 @@ const ClientSchema = new Schema<IClient>(
     name: { type: String, required: true },
     phone: { type: String, required: true },
     email: { type: String },
+    purchaseDate: { type: Date, default: Date.now },
     address: { type: String },
     purchases: { type: [PurchasedProductSchema], default: [] },
     totalPurchases: { type: Number, default: 0 },

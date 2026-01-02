@@ -19,7 +19,8 @@ const transporter = nodemailer.createTransport({
 });
 
 // Test the connection once on startup
-transporter.verify((err, success) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+transporter.verify((err, _success) => {
   if (err) {
     console.error('SMTP connection error:', err);
   } else {

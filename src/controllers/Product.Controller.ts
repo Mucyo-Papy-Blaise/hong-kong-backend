@@ -123,10 +123,7 @@ async getAll(req: Request, res: Response) {
 }
 
 
-  /**
-   * Get single product by ID
-   * GET /products/:id
-   */
+
   async getById(req: Request, res: Response) {
     try {
       const { id } = req.params
@@ -155,11 +152,7 @@ async getAll(req: Request, res: Response) {
     }
   }
 
-  /**
-   * Create new product (admin only)
-   * POST /products
-   */
-  
+
   async create(req: Request, res: Response) {
   try {
     const { brand: brandName, lensType   } = req.body;
@@ -221,10 +214,6 @@ async getAll(req: Request, res: Response) {
   }
 }
 
-  /**
-   * Update product (admin only)
-   * PUT /products/:id
-   */
 async update(req: Request, res: Response) {
   try {
     const { id } = req.params;
@@ -235,14 +224,11 @@ async update(req: Request, res: Response) {
 
     let brandId;
     if (brandValue) {
-      // Check if it's an ObjectId (ID) or a string (name)
       if (mongoose.Types.ObjectId.isValid(brandValue) && brandValue.length === 24) {
-        // It's an ID - verify it exists
         const brand = await Brand.findById(brandValue);
         if (!brand) return res.status(400).json({ success: false, error: "Brand not found" });
         brandId = brand._id;
       } else {
-        // It's a name - find by name
         const brand = await Brand.findOne({ name: brandValue });
         if (!brand) return res.status(400).json({ success: false, error: "Brand not found" });
         brandId = brand._id;
@@ -255,15 +241,12 @@ async update(req: Request, res: Response) {
         ? req.body.lensType
         : JSON.parse(req.body.lensType);
       
-      // Check if first value is an ID or name
       if (lensValues.length > 0 && mongoose.Types.ObjectId.isValid(lensValues[0]) && lensValues[0].length === 24) {
-        // They're IDs
         const lenses = await Lenses.find({ _id: { $in: lensValues } });
         if (lenses.length === 0)
           return res.status(400).json({ success: false, error: "No lenses found" });
         lensIds = lenses.map((l) => l._id as mongoose.Types.ObjectId);
       } else {
-        // They're names
         const lenses = await Lenses.find({ name: { $in: lensValues } });
         if (lenses.length === 0)
           return res.status(400).json({ success: false, error: "No lenses found" });
@@ -296,10 +279,7 @@ async update(req: Request, res: Response) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
-  /**
-   * Delete product (admin only)
-   * DELETE /products/:id
-   */
+
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params
@@ -325,10 +305,7 @@ async update(req: Request, res: Response) {
     }
   }
 
-  /**
-   * Get related products for a product
-   * GET /related-products/:productId
-   */
+
   async getRelatedProducts(req: Request, res: Response) {
     try {
       const { productId } = req.params
