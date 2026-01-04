@@ -54,7 +54,7 @@ export const createApp = (): Application => {
   app.use("/admin", adminRoutes)
   app.use("/lenses", lensesRoutes)
   app.use('/contacts', contactRes);
-  app.use('/api/clients', clientRes)
+  app.use('/clients', clientRes)
   app.use('/orders', orderRes)
   app.use("/appointments", AppointmentRes)
 
