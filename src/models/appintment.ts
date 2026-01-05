@@ -1,8 +1,8 @@
-import mongoose, { type Document, Schema } from "mongoose";
+import mongoose, { type Document, Schema, Types } from "mongoose";
 import { IUser } from "./User";
 
 export interface IAppointment extends Document {
-  user: mongoose.ObjectId | IUser;
+  user: Types.ObjectId | IUser;
   firstName: string;
   lastName: string;
   email: string;
@@ -19,7 +19,7 @@ export interface IAppointment extends Document {
 const appointmentSchema = new Schema<IAppointment>(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },

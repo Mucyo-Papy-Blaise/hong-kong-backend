@@ -15,7 +15,7 @@ import wishlistRoutes from "./routes/wishlist.route"
 import adminRoutes from "./routes/admin.route"
 import lensesRoutes  from  './routes/lenses.route'
 import contactRes from "./routes/contact.routes"
-import clientRes from './routes/Clients.route'
+import clientRes from './routes/clients.route'
 import orderRes from './routes/order.route'
 import AppointmentRes  from "./routes/appointment.routes"
 

@@ -1,9 +1,9 @@
-import { Router } from "express"
-import { InsuranceLogoController } from "../controllers/InsuranceLogo.Controller"
+import { Router, type Router as ExpressRouter } from "express";
 import { authenticate, requireAdmin } from "../middleware/auth"
 import { upload } from "../config/multer"
+import { InsuranceLogoController } from "../controllers/insurance-logo.controller";
 
-const router = Router()
+const router:ExpressRouter = Router()
 const insuranceLogoController = new InsuranceLogoController()
 
 // Public routes

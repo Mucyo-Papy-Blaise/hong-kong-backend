@@ -1,9 +1,9 @@
-import { LensesController } from "../controllers/Lenses.Controller";
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
 import { authenticate, requireAdmin } from "../middleware/auth";
 import { upload } from "../config/multer";
+import { LensesController } from "../controllers/lenses.controller";
 
-const router = Router()
+const router:ExpressRouter = Router()
 const lensesController = new LensesController()
 
 router.get('/', lensesController.getAll.bind(lensesController))

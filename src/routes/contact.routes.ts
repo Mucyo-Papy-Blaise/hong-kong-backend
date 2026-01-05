@@ -1,7 +1,7 @@
-import Router from 'express';
-import { ContactController } from '../controllers/Contact.Controller';
+import { Router, type Router as ExpressRouter } from "express";
+import { ContactController } from "../controllers/contact.controller";
 
-const router = Router();
+const router:ExpressRouter = Router();
 
 // Route to create a new contact message
 router.post('/', ContactController.createContact);

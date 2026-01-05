@@ -1,8 +1,9 @@
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
+
 import { OrderController } from "../controllers/order.controller";
 import { authenticate, requireAdmin } from "../middleware/auth";
 
-const router = Router();
+const router:ExpressRouter = Router();
 
 // User routes
 router.post("/", authenticate, OrderController.createOrder);

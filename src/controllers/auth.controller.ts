@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs";
 import { User } from "../models/User"
 import { generateAccessToken } from "../services/token"
 import type { AuthRequest } from "../types"

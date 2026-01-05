@@ -1,10 +1,10 @@
-import { Router } from "express"
+import { Router, type Router as ExpressRouter } from "express";
 import { body } from "express-validator"
-import { CartController } from "../controllers/Cart.Controller"
 import { authenticate } from "../middleware/auth"
 import { validate } from "../middleware/validation"
+import { CartController } from "../controllers/cart.controller";
 
-const router = Router()
+const router: ExpressRouter = Router()
 const cartController = new CartController()
 
 // All cart routes require authentication

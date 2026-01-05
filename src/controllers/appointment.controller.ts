@@ -10,6 +10,7 @@ export class AppointmentController {
   static createAppointment = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
+    
     const { firstName, lastName, email, phone, date, time, serviceType } =
       req.body;
 

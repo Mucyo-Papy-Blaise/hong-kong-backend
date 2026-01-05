@@ -1,10 +1,10 @@
-import { Router } from "express"
+import { Router, type Router as ExpressRouter } from "express";
 import { body } from "express-validator"
-import { WishlistController } from "../controllers/Wishlist.Controller"
 import { authenticate } from "../middleware/auth"
 import { validate } from "../middleware/validation"
+import { WishlistController } from "../controllers/wishlist.controller";
 
-const router = Router()
+const router:ExpressRouter = Router()
 const wishlistController = new WishlistController()
 
 // All wishlist routes require authentication

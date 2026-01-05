@@ -1,11 +1,11 @@
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
 import { body } from "express-validator";
-import { AuthController } from "../controllers/Auth.Controller";
 import { validate } from "../middleware/validation";
 import { authenticate } from "../middleware/auth";
 import { upload } from "../config/multer";
+import { AuthController } from "../controllers/auth.controller";
 
-const router = Router();
+const router:ExpressRouter = Router();
 const authController = new AuthController();
 
 // Register (with image upload)

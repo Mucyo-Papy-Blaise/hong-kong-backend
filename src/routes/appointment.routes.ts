@@ -1,8 +1,8 @@
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
 import { AppointmentController } from "../controllers/appointment.controller";
 import { authenticate, requireAdmin } from "../middleware/auth";
 
-const router = Router();
+const router: ExpressRouter = Router();
 
 // User routes
 router.post("/", authenticate, AppointmentController.createAppointment);

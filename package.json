@@ -20,7 +20,6 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
     "bcryptjs": "latest",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "latest",

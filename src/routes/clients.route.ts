@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { Router, type Router as ExpressRouter } from "express";
 import { ClientController } from "../controllers/Clients.Controller";
 
-const router = Router();
+const router: ExpressRouter = Router();
 const client = new ClientController();
 
 router.post("/", client.create.bind(client));

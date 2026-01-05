@@ -1,9 +1,9 @@
-import { Router } from "express"
-import { BrandController } from "../controllers/Brand.Controller"
+import { Router, type Router as ExpressRouter } from "express";
 import { authenticate, requireAdmin } from "../middleware/auth"
 import { upload } from "../config/multer"
+import { BrandController } from "../controllers/brand.controller";
 
-const router = Router()
+const router: ExpressRouter = Router()
 const brandController = new BrandController()
 
 // Public routes

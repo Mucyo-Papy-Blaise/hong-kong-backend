@@ -1,9 +1,9 @@
-import { Router } from "express"
-import { ProductController } from "../controllers/Product.Controller"
+import { Router, type Router as ExpressRouter } from "express";
 import { authenticate, requireAdmin } from "../middleware/auth"
 import { upload } from "../config/multer"
+import { ProductController } from "../controllers/product.controller";
 
-const router = Router()
+const router:ExpressRouter = Router()
 const productController = new ProductController()
 
 // Public routes
