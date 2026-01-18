@@ -38,7 +38,5 @@ const brandSchema = new Schema<IBrand>(
   },
 )
 
-// Index for slug lookups
-brandSchema.index({ slug: 1 })
 
 export const Brand = mongoose.model<IBrand>("Brand", brandSchema)
